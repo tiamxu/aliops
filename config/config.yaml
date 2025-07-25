@@ -6,6 +6,6 @@ http_srv:
   read_timeout: 30s
   write_timeout: 30s
 aliyun:
-  access_key_id: ${ALIYUN_ACCESS_KEY_ID}
-  access_key_secret: ${ALIYUN_ACCESS_KEY_SECRET}
+  access_key_id: xx
+  access_key_secret: bb
   region_id: cn-shenzhen

@@ -7,6 +7,7 @@ import (
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/tiamxu/aliops/config"
+	"github.com/tiamxu/aliops/types"
 )
 
 type DNSClient struct {
@@ -30,6 +31,23 @@ func NewDNSClient(cfg *config.AliyunConfig) (*DNSClient, error) {
 	}, nil
 }
 
+func (c *DNSClient) AddDomainRecord(req *types.DomainRecordAddReq) (*dns.AddDomainRecordResponse, error) {
+	resp, err := c.client.AddDomainRecord(&dns.AddDomainRecordRequest{
+		DomainName: tea.String(req.DomainName),
+		RR:         tea.String(req.RR),
+		Type:       tea.String(req.Type),
+		Value:      tea.String(req.Value),
+		TTL:        tea.Int64(req.TTL),
+	})
+	return resp, err
+}
+
+//	func (c *DNSClient) DeleteDomainRecord(req *types.DomainRecordDelReq) (*dns.DeleteDomainRecordResponse, error) {
+//		resp, err := c.client.DeleteDomainRecord(&dns.DeleteDomainRecordRequest{
+//			RecordId: req.RecordId,
+//		})
+//		return resp, err
+//	}
 func (c *DNSClient) DescribeAllRecords(domain string) ([]*dns.DescribeDomainRecordsResponseBodyDomainRecordsRecord, error) {
 	req := &dns.DescribeDomainRecordsRequest{
 		DomainName: tea.String(domain),

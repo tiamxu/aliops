@@ -30,6 +30,8 @@ func main() {
 	api := r.Group("/api/dns")
 	{
 		api.GET("/records", dnsHandler.List)
+		api.POST("/records", dnsHandler.Add)
+
 	}
 	// routes.InitRoutes(r)
 	if err := r.Run(cfg.HttpSrv.Address); err != nil {

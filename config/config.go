@@ -37,7 +37,7 @@ func (c *Config) Initial() (err error) {
 			log.Printf("config initialed, env: %s,name: %s", cfg.ENV, name)
 		}
 	}()
-	//日志
+
 	if level, err := logrus.ParseLevel(c.LogLevel); err != nil {
 		return fmt.Errorf("invalid log level: %w", err)
 	} else {
@@ -51,7 +51,6 @@ func (c *Config) Initial() (err error) {
 }
 func LoadConfig() (*Config, error) {
 	cfg = new(Config)
-	// env := os.Getenv("ENV")
 	env := "local"
 
 	switch env {
