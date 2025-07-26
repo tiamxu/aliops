@@ -42,3 +42,8 @@ curl -XPATCH http://localhost:8800/api/dns/records
     "status": "enable"
 }
 ```
+
+### 查询record id
+```
+curl -XGET http://localhost:8800/api/dns/records?domain=gopron.cn&rr=test4
+```
