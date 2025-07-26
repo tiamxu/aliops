@@ -21,4 +21,24 @@ type DomainRecordAddReq struct {
 }
 
 type DomainRecordDelReq struct {
+	RecordId string `json:"record_id" form:"record_id"`
+}
+
+type RecordIDGetReq struct {
+	DomainName string `json:"domain" form:"domain"`
+	RR         string `json:"rr" form:"rr"`
+}
+
+type DomainRecordStatusUpdateReq struct {
+	DomainName string `json:"domain" form:"domain"`
+	RR         string `json:"rr" form:"rr"`
+	Status     string `json:"status" form:"status"`
+}
+
+type DomainRecordUpdateReq struct {
+	RecordId string `json:"record_id" form:"record_id"`
+	RR       string `json:"rr" form:"rr"`
+	Type     string `json:"type" form:"type"`
+	Value    string `json:"value" form:"value"`
+	TTL      int64  `json:"ttl" form:"ttl"`
 }

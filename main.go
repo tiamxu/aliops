@@ -29,8 +29,16 @@ func main() {
 
 	api := r.Group("/api/dns")
 	{
-		api.GET("/records", dnsHandler.List)
 		api.POST("/records", dnsHandler.Add)
+		api.DELETE("/records", dnsHandler.Delete)
+		api.PUT("/records", dnsHandler.Update)
+		api.GET("/records", dnsHandler.List)
+		api.PATCH("/records", dnsHandler.SetStatus)
+
+		api.GET("/records/id", dnsHandler.QueryRecordID)
+		// api.DELETE("/records/:id", dnsHandler.Delete)
+		api.PUT("/records/:id", dnsHandler.Update)
+		api.PATCH("/records/:id", dnsHandler.SetStatus)
 
 	}
 	// routes.InitRoutes(r)

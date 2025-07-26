@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/tiamxu/aliops/client"
@@ -58,15 +59,26 @@ func (s *DNSService) ListRecordsByType(domain, recordType string) error {
 func (s *DNSService) Add(req *types.DomainRecordAddReq) (string, error) {
 	resp, err := s.client.AddDomainRecord(req)
 	if err != nil {
-		return "", fmt.Errorf("添加dns解析记录失败", err)
+		return "", fmt.Errorf("添加dns解析记录失败 %w", err)
 	}
+
 	return tea.StringValue(resp.Body.RecordId), nil
 }
-func (s *DNSService) Delete(recordId string) error {
+func (s *DNSService) Delete(domain, rr string) error {
+	recordId, err := s.QueryRecordID(domain, rr)
+	if err != nil {
+		return fmt.Errorf("查询DNS record id错误 %w", err)
+	}
+	_, err = s.client.DeleteDomainRecord(&recordId)
+	if err != nil {
+		return fmt.Errorf("删除DNS record错误%w", err)
+	}
 	return nil
 }
-func (s *DNSService) Update(record model.DNSRecord) error {
-	return nil
+func (s *DNSService) Update(record *types.DomainRecordUpdateReq) error {
+
+	_, err := s.client.UpdateDomainRecord(record)
+	return err
 }
 func (s *DNSService) List(domain string) (types.ListResponse, error) {
 	records, err := s.client.DescribeAllRecords(domain)
@@ -90,4 +102,36 @@ func (s *DNSService) List(domain string) (types.ListResponse, error) {
 		Records: result,
 		Total:   len(result),
 	}, nil
+}
+
+func (s *DNSService) QueryRecordID(domain, rr string) (string, error) {
+	records, err := s.List(domain)
+	if err != nil {
+		return "", fmt.Errorf("获取域名记录失败:%w", err)
+	}
+	for _, record := range records.Records {
+		if record.RR == rr {
+
+			return record.RecordId, nil
+		}
+	}
+	return "", fmt.Errorf("未找到域名 %s 下RR为 %s 的记录", domain, rr)
+}
+
+func (s *DNSService) SetStatus(req *types.DomainRecordStatusUpdateReq) error {
+	status := strings.ToUpper(req.Status)
+	if status != "ENABLE" && status != "DISABLE" {
+		return fmt.Errorf("状态参数必须是 ENABLE 或 DISABLE")
+	}
+	recordId, err := s.QueryRecordID(req.DomainName, req.RR)
+	if err != nil {
+		return fmt.Errorf("查询DNS record id错误 %w", err)
+	}
+
+	_, err = s.client.SetDomainRecordStatus(&recordId, &status)
+	if err != nil {
+		return fmt.Errorf("修改DNS记录状态错误: %w", err)
+
+	}
+	return err
 }

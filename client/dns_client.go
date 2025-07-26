@@ -42,12 +42,29 @@ func (c *DNSClient) AddDomainRecord(req *types.DomainRecordAddReq) (*dns.AddDoma
 	return resp, err
 }
 
-//	func (c *DNSClient) DeleteDomainRecord(req *types.DomainRecordDelReq) (*dns.DeleteDomainRecordResponse, error) {
-//		resp, err := c.client.DeleteDomainRecord(&dns.DeleteDomainRecordRequest{
-//			RecordId: req.RecordId,
-//		})
-//		return resp, err
-//	}
+func (c *DNSClient) DeleteDomainRecord(recordId *string) (*dns.DeleteDomainRecordResponse, error) {
+	resp, err := c.client.DeleteDomainRecord(&dns.DeleteDomainRecordRequest{
+		RecordId: recordId,
+	})
+	return resp, err
+}
+func (c *DNSClient) UpdateDomainRecord(req *types.DomainRecordUpdateReq) (*dns.UpdateDomainRecordResponse, error) {
+	resp, err := c.client.UpdateDomainRecord(&dns.UpdateDomainRecordRequest{
+		RecordId: &req.RecordId,
+		RR:       &req.RR,
+		Type:     &req.Type,
+		Value:    &req.Value,
+		TTL:      &req.TTL,
+	})
+	return resp, err
+}
+func (c *DNSClient) SetDomainRecordStatus(recordId, status *string) (*dns.SetDomainRecordStatusResponse, error) {
+	resp, err := c.client.SetDomainRecordStatus(&dns.SetDomainRecordStatusRequest{
+		RecordId: recordId,
+		Status:   status,
+	})
+	return resp, err
+}
 func (c *DNSClient) DescribeAllRecords(domain string) ([]*dns.DescribeDomainRecordsResponseBodyDomainRecordsRecord, error) {
 	req := &dns.DescribeDomainRecordsRequest{
 		DomainName: tea.String(domain),
